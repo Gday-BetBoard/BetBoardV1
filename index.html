@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>G'Day BetBoard</title>
+  <link href="style.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      background: #f5f7fa;
+      color: #1c1c1c;
+    }
+
+    header {
+      background-color: #004b50;
+      color: #fff;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    main {
+      padding: 2rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .bet-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      margin-bottom: 1rem;
+      padding: 1.25rem;
+    }
+
+    .bet-card h2 {
+      margin: 0 0 0.5rem;
+      font-size: 1.2rem;
+    }
+
+    .meta {
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 0.75rem;
+    }
+
+    .category {
+      display: inline-block;
+      background: #e0f7f4;
+      color: #004b50;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      margin-left: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>G'Day BetBoard</h1>
+    <span>Track what we’re backing.</span>
+  </header>
+
+  <main id="betboard">
+    <!-- Bets will be injected here -->
+  </main>
+
+  <script>
+    const betboard = document.getElementById('betboard')
+
+    fetch('bets.json')
+      .then(res => res.json())
+      .then(data => {
+        data.bets.forEach(bet => {
+          const div = document.createElement('div')
+          div.className = 'bet-card'
+          div.innerHTML = `
+            <h2>${bet.what} <span class="category">${bet.category}</span></h2>
+            <div class="meta">Owner: ${bet.owner} | When: ${bet.when} | Status: ${bet.status}</div>
+            <p><strong>Why:</strong> ${bet.why}</p>
+            <p><strong>How:</strong> ${bet.how}</p>
+          `
+          betboard.appendChild(div)
+        })
+      })
+      .catch(err => {
+        betboard.innerHTML = '<p>Could not load bets.</p>'
+        console.error('Error loading bets:', err)
+      })
+  </script>
+
+</body>
+</html>
