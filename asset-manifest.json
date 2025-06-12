@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/BetBoardV1/static/css/main.760d2ed7.css",
+    "main.js": "/BetBoardV1/static/js/main.6079a871.js",
+    "index.html": "/BetBoardV1/index.html",
+    "main.760d2ed7.css.map": "/BetBoardV1/static/css/main.760d2ed7.css.map",
+    "main.6079a871.js.map": "/BetBoardV1/static/js/main.6079a871.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.760d2ed7.css",
+    "static/js/main.6079a871.js"
+  ]
+}
