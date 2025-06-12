@@ -865,6 +865,30 @@ body::after {
   align-items: center;
   z-index: 1000;
   padding: 2rem;
+  opacity: 0;
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.modal-overlay.fade-out {
+  animation: fadeOut 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
 .modal-content {
@@ -877,6 +901,34 @@ body::after {
   max-height: 80vh;
   overflow-y: auto;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  transform: scale(0.9);
+  animation: modalContentFadeIn 0.5s ease forwards;
+}
+
+.modal-overlay.fade-out .modal-content {
+  animation: modalContentFadeOut 0.5s ease forwards;
+}
+
+@keyframes modalContentFadeIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes modalContentFadeOut {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.9);
+    opacity: 0;
+  }
 }
 
 .modal-header {

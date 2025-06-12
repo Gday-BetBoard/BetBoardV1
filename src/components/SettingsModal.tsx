@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { User, ToastType } from '../types';
 
 interface SettingsModalProps {
@@ -15,23 +15,32 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   showToast 
 }) => {
   const [newUserName, setNewUserName] = useState('');
+  const [isClosing, setIsClosing] = useState(false);
+
+  const handleClose = useCallback(() => {
+    setIsClosing(true);
+    setTimeout(() => {
+      onClose();
+      setIsClosing(false);
+    }, 500);
+  }, [onClose]);
 
   const handleOverlayClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
-      onClose();
+      handleClose();
     }
   };
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        onClose();
+        handleClose();
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [handleClose]);
 
   const handleAddUser = (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,13 +78,17 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   };
 
   return (
-    <div className="modal-overlay" onClick={handleOverlayClick}>
+    <div 
+      className={`modal-overlay ${isClosing ? 'closing' : ''}`}
+      data-testid="modal-overlay"
+      onClick={handleOverlayClick}
+    >
       <div className="modal-content settings-modal">
         <div className="modal-header">
           <h2>Settings</h2>
           <button 
             className="close-btn"
-            onClick={onClose}
+            onClick={handleClose}
             type="button"
           >
             ✕
@@ -133,7 +146,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
         <div className="modal-footer">
           <button 
             className="btn btn-secondary"
-            onClick={onClose}
+            onClick={handleClose}
           >
             Close
           </button>
