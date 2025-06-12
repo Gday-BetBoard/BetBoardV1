@@ -27,22 +27,37 @@
     "zustand": "^4.5.7"
   },
   "devDependencies": {
+    "@playwright/test": "^1.47.2",
     "@testing-library/jest-dom": "^6.1.0",
     "@testing-library/react": "^14.1.0",
     "@testing-library/user-event": "^14.5.0",
     "@types/jest": "^29.5.0",
-
     "eslint": "^8.57.0",
     "eslint-config-react-app": "^7.0.0",
+    "husky": "^9.1.7",
+    "identity-obj-proxy": "^3.0.0",
     "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0"
+    "jest-environment-jsdom": "^29.7.0",
+    "lint-staged": "^15.2.11",
+    "ts-jest": "^29.4.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
+    "test:coverage": "jest --coverage --watchAll=false",
+    "test:ci": "jest --coverage --watchAll=false --ci",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:all": "npm run test:ci && npm run test:e2e",
+    "lint": "eslint src --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "type-check": "tsc --noEmit",
+    "pre-commit": "npm run type-check && npm run lint && npm run test:ci",
+    "test:report": "node scripts/test-report.js",
+    "prepare": "husky install",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -63,15 +78,13 @@
       "last 1 safari version"
     ]
   },
-  "jest": {
-    "testEnvironment": "jsdom",
-    "setupFilesAfterEnv": [
-      "<rootDir>/src/setupTests.ts"
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "jest --bail --findRelatedTests --passWithNoTests"
     ],
-    "collectCoverageFrom": [
-      "src/**/*.{ts,tsx}",
-      "!src/**/*.d.ts",
-      "!src/index.tsx"
+    "src/**/*.{js,jsx,ts,tsx,json,css,md}": [
+      "prettier --write"
     ]
   }
 }

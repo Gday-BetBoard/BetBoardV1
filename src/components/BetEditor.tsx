@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Bet, User } from '../types';
 import { formatDateToYYYYMMDD } from '../utils/dateUtils';
+import { motion } from 'framer-motion';
 
 interface BetEditorProps {
   bet: Bet | null;
@@ -77,8 +78,21 @@ const BetEditor: React.FC<BetEditorProps> = ({ bet, users, onSave, onClose }) =>
   }, [onClose]);
 
   return (
-    <div className="editor-overlay" onClick={handleOverlayClick}>
-      <div className="editor-panel">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
+      className="editor-overlay" 
+      onClick={handleOverlayClick}
+    >
+      <motion.div 
+        className="editor-panel"
+        initial={{ x: '100%' }}
+        animate={{ x: 0 }}
+        exit={{ x: '100%' }}
+        transition={{ duration: 0.5, ease: "easeInOut" }}
+      >
         <div className="editor-header">
           <h2>{bet ? 'Edit Bet' : 'New Bet'}</h2>
           <button 
@@ -184,8 +198,8 @@ const BetEditor: React.FC<BetEditorProps> = ({ bet, users, onSave, onClose }) =>
             </button>
           </div>
         </form>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 

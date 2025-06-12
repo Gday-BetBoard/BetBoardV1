@@ -21,11 +21,12 @@ const FilterBar: React.FC<FilterBarProps> = ({ filters, onFiltersChange, users }
   return (
     <div className="filters">
       <div className="filter-group">
-        <label htmlFor="filter-owner">Filter by Owner:</label>
+        <label htmlFor="filter-owner" className="filter-label">Filter by Owner:</label>
         <select
           id="filter-owner"
           value={filters.owner}
           onChange={(e) => handleFilterChange('owner', e.target.value)}
+          className="filter-select"
         >
           <option value="">All Owners</option>
           {users.map(user => (
@@ -37,11 +38,12 @@ const FilterBar: React.FC<FilterBarProps> = ({ filters, onFiltersChange, users }
       </div>
 
       <div className="filter-group">
-        <label htmlFor="filter-status">Filter by Status:</label>
+        <label htmlFor="filter-status" className="filter-label">Filter by Status:</label>
         <select
           id="filter-status"
           value={filters.status}
           onChange={(e) => handleFilterChange('status', e.target.value)}
+          className="filter-select"
         >
           <option value="">All Statuses</option>
           <option value="Open">Open</option>

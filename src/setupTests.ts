@@ -2,16 +2,14 @@
 import '@testing-library/jest-dom';
 
 // Mock IntersectionObserver for components that use it
-global.IntersectionObserver = class IntersectionObserver {
-  constructor() {}
+(global as any).IntersectionObserver = class IntersectionObserver {
   disconnect() {}
   observe() {}
   unobserve() {}
 };
 
 // Mock ResizeObserver for components that use it
-global.ResizeObserver = class ResizeObserver {
-  constructor() {}
+(global as any).ResizeObserver = class ResizeObserver {
   disconnect() {}
   observe() {}
   unobserve() {}
@@ -38,8 +36,10 @@ const localStorageMock = {
   setItem: jest.fn(),
   removeItem: jest.fn(),
   clear: jest.fn(),
+  length: 0,
+  key: jest.fn(),
 };
-global.localStorage = localStorageMock;
+(global as any).localStorage = localStorageMock;
 
 // Mock sessionStorage
 const sessionStorageMock = {
@@ -47,11 +47,13 @@ const sessionStorageMock = {
   setItem: jest.fn(),
   removeItem: jest.fn(),
   clear: jest.fn(),
+  length: 0,
+  key: jest.fn(),
 };
-global.sessionStorage = sessionStorageMock;
+(global as any).sessionStorage = sessionStorageMock;
 
 // Mock fetch API
-global.fetch = jest.fn();
+(global as any).fetch = jest.fn();
 
 // Suppress console errors in tests unless debugging
 const originalError = console.error;

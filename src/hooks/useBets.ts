@@ -1,14 +1,13 @@
 // Simplified hooks for basic functionality
-import { useState, useEffect } from 'react';
-import { apiService } from '../services/api';
+import { useState, useEffect, useCallback } from 'react';
 import { useBetBoardStore } from '../store';
 
 // Basic hooks without React Query
 export const useBets = () => {
-  const { bets, setBets, isLoading, setLoading } = useBetBoardStore();
+  const { bets, isLoading, setLoading } = useBetBoardStore();
   const [error, setError] = useState<string | null>(null);
 
-  const fetchBets = async () => {
+  const fetchBets = useCallback(async () => {
     try {
       setLoading(true);
       // For now, we'll just use the data from the store
@@ -18,11 +17,11 @@ export const useBets = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [setLoading]);
 
   useEffect(() => {
     fetchBets();
-  }, []);
+  }, [fetchBets]);
 
   return {
     bets,

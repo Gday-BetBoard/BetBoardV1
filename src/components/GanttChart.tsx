@@ -106,8 +106,8 @@ const GanttChart: React.FC<GanttChartProps> = ({ bets }) => {
         <div className="gantt-timeline">
           {/* Today marker - always at the beginning (0%) */}
           <div className="timeline-marker current-date" style={{ left: '0%' }}>
-            <div className="marker-line"></div>
             <div className="marker-label">Today<br/>{formatDateToDDMMYYYY(currentDate)}</div>
+            <div className="marker-line"></div>
           </div>
           
           {/* Week markers - start from next week to avoid overlap */}
@@ -117,8 +117,8 @@ const GanttChart: React.FC<GanttChartProps> = ({ bets }) => {
               className="timeline-marker week-marker" 
               style={{ left: `${marker.position}%` }}
             >
-              <div className="marker-line"></div>
               <div className="marker-label">Week<br/>{marker.label}</div>
+              <div className="marker-line"></div>
             </div>
           ))}
         </div>

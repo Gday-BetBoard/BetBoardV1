@@ -9,6 +9,7 @@ import FilterBar from './components/FilterBar';
 import GanttChart from './components/GanttChart';
 import betsData from './data/bets.json';
 import { getCurrentDateYYYYMMDD } from './utils/dateUtils';
+import { AnimatePresence } from 'framer-motion';
 
 const DEFAULT_USERS = [
   { id: 'user-1', name: 'Steve P' },
@@ -135,7 +136,7 @@ function App() {
       <header className="header">
         <div className="header-content">
           <div className="logo-section">
-            <svg className="logo" width="435" height="150" viewBox="0 0 236 81.2318841" xmlns="http://www.w3.org/2000/svg">
+            <svg className="logo" width="174" height="60" viewBox="0 0 236 81.2318841" xmlns="http://www.w3.org/2000/svg">
               <g fill="none" fillRule="evenodd">
                 <path d="m117.575713 43.6086957c-21.7372402 0-42.0363887-10.5778831-54.3003507-28.2962333l22.7693827-15.3124624c7.1251362 10.2937071 18.912356 16.4393901 31.530968 16.4393901 12.615875 0 24.401727-6.1436604 31.527206-16.43365939l22.766646 15.31650769c-12.264646 17.7119452-32.5614 28.2864573-54.293852 28.2864573" fill="#fd0"/>
                 <g fill="#fdfdfd">
@@ -153,14 +154,18 @@ function App() {
             <button 
               className="btn btn-primary"
               onClick={() => openEditor()}
+              title="New Bet"
             >
-              ✏️ New Bet
+              <span className="button-text">New Bet</span>
+              <span className="button-icon">✏️</span>
             </button>
             <button 
               className="btn btn-secondary"
               onClick={() => setIsSettingsOpen(true)}
+              title="Settings"
             >
-              ⚙️ Settings
+              <span className="button-text">Settings</span>
+              <span className="button-icon">⚙️</span>
             </button>
           </div>
         </div>
@@ -196,14 +201,16 @@ function App() {
         )}
       </main>
 
-      {isEditorOpen && (
-        <BetEditor
-          bet={currentBet}
-          users={users}
-          onSave={saveBet}
-          onClose={closeEditor}
-        />
-      )}
+      <AnimatePresence>
+        {isEditorOpen && (
+          <BetEditor
+            bet={currentBet}
+            users={users}
+            onSave={saveBet}
+            onClose={closeEditor}
+          />
+        )}
+      </AnimatePresence>
 
       {isSettingsOpen && (
         <SettingsModal
