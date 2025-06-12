@@ -1,0 +1,104 @@
+[
+  {
+    "id": "bet-001",
+    "owner": "Steve P",
+    "what": "Implement new user authentication system",
+    "why": "Current system is outdated and has security vulnerabilities",
+    "how": "Migrate to OAuth 2.0 with JWT tokens and implement MFA",
+    "when": "2025-07-31",
+    "status": "In Progress",
+    "priority": "High",
+    "lastUpdated": "2024-01-20",
+    "tags": ["security", "authentication"],
+    "assignees": ["Steve P"],
+    "comments": [
+      {
+        "id": "comment-001",
+        "author": "Jane D",
+        "text": "Great initiative! Make sure to include proper session management.",
+        "date": "2024-01-18"
+      },
+      {
+        "id": "comment-002",
+        "author": "Steve P",
+        "text": "Thanks Jane! I've started working on the OAuth integration.",
+        "date": "2024-01-20"
+      }
+    ]
+  },
+  {
+    "id": "bet-002",
+    "owner": "Jane D",
+    "what": "Reduce page load time by 50%",
+    "why": "Users are experiencing slow load times affecting user experience",
+    "how": "Implement lazy loading, optimize images, and use CDN",
+    "when": "2025-07-31",
+    "status": "Open",
+    "priority": "Medium",
+    "lastUpdated": "2024-01-15",
+    "tags": ["performance", "optimization"],
+    "assignees": ["Jane D", "John Doe"],
+    "comments": [
+      {
+        "id": "comment-003",
+        "author": "John Doe",
+        "text": "Consider using WebP format for images to reduce size further.",
+        "date": "2024-01-16"
+      }
+    ]
+  },
+  {
+    "id": "bet-003",
+    "owner": "John Doe",
+    "what": "Launch mobile app beta",
+    "why": "60% of our users access the platform via mobile devices",
+    "how": "Develop React Native app with core features",
+    "when": "2025-08-31",
+    "status": "Blocked",
+    "priority": "Critical",
+    "lastUpdated": "2024-01-22",
+    "tags": ["mobile", "react-native", "beta"],
+    "assignees": ["John Doe", "Emily R"],
+    "comments": [
+      {
+        "id": "comment-004",
+        "author": "Emily R",
+        "text": "What's blocking this? Do you need additional resources?",
+        "date": "2024-01-22"
+      },
+      {
+        "id": "comment-005",
+        "author": "John Doe",
+        "text": "Waiting for API endpoints to be finalized by backend team.",
+        "date": "2024-01-22"
+      }
+    ]
+  },
+  {
+    "id": "bet-004",
+    "owner": "Emily R",
+    "what": "Achieve 99.9% uptime",
+    "why": "Recent outages have affected customer trust and revenue",
+    "how": "Implement redundancy, monitoring, and automated failover",
+    "when": "2025-08-31",
+    "status": "Done",
+    "priority": "Critical",
+    "lastUpdated": "2024-01-25",
+    "tags": ["infrastructure", "monitoring", "uptime"],
+    "assignees": ["Emily R", "Michael B"],
+    "comments": [
+      {
+        "id": "comment-006",
+        "author": "Michael B",
+        "text": "Excellent work on the monitoring dashboard!",
+        "date": "2024-01-24"
+      },
+      {
+        "id": "comment-007",
+        "author": "Emily R",
+        "text": "Thanks! The automated alerts are working perfectly now.",
+        "date": "2024-01-25"
+      }
+    ]
+  }
+] 
