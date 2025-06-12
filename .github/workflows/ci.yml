@@ -91,8 +91,23 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Run npm audit
-      run: npm audit --audit-level moderate
+    - name: Use Node.js 20.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20.x
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run security audit (production only)
+      run: npm audit --omit=dev --audit-level high
+      continue-on-error: false
+
+    - name: Run full security audit (informational)
+      run: |
+        echo "Full security audit (including dev dependencies):"
+        npm audit --audit-level moderate || echo "Development dependencies have known vulnerabilities - this is informational only"
       continue-on-error: true
 
     - name: Run dependency vulnerability check
