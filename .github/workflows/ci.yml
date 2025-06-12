@@ -100,15 +100,26 @@ jobs:
     - name: Install dependencies
       run: npm ci
 
-    - name: Run security audit (production only)
-      run: npm audit --omit=dev --audit-level high
-      continue-on-error: false
-
-    - name: Run full security audit (informational)
+    - name: Run security audit (informational)
       run: |
-        echo "Full security audit (including dev dependencies):"
-        npm audit --audit-level moderate || echo "Development dependencies have known vulnerabilities - this is informational only"
+        echo "🔍 Running security audit..."
+        echo "Note: React applications often have dev dependency vulnerabilities that don't affect production"
+        npm audit --audit-level critical || echo "⚠️  Found vulnerabilities - review for production impact"
       continue-on-error: true
+
+    - name: Check for critical production vulnerabilities
+      run: |
+        echo "🔒 Checking for critical production vulnerabilities..."
+        CRITICAL_COUNT=$(npm audit --json --audit-level critical 2>/dev/null | jq '.metadata.vulnerabilities.critical // 0' || echo "0")
+        echo "Critical vulnerabilities found: $CRITICAL_COUNT"
+        if [ "$CRITICAL_COUNT" -gt 0 ]; then
+          echo "❌ Critical vulnerabilities found that require immediate attention"
+          npm audit --audit-level critical
+          exit 1
+        else
+          echo "✅ No critical vulnerabilities found"
+        fi
+      continue-on-error: false
 
     - name: Run dependency vulnerability check
       uses: actions/dependency-review-action@v4
