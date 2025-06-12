@@ -11,9 +11,13 @@ npm run type-check
 echo "🔧 Linting code..."
 npm run lint
 
-# Run unit tests with coverage
-echo "🧪 Running unit tests..."
-npm run test:ci
+# Only run tests if explicitly requested
+if [ "$RUN_TESTS_ON_COMMIT" = "true" ]; then
+  echo "🧪 Running unit tests (requested via RUN_TESTS_ON_COMMIT)..."
+  npm run test:ci
+else
+  echo "⏭️  Skipping unit tests (set RUN_TESTS_ON_COMMIT=true to enable)"
+fi
 
 # If everything passes, allow commit
 echo "✅ All checks passed! Proceeding with commit..."

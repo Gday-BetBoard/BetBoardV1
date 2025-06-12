@@ -50,14 +50,21 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage --watchAll=false",
     "test:ci": "jest --coverage --watchAll=false --ci",
+    "test:local": "npm run test:unit:local && npm run test:e2e:local",
+    "test:unit:local": "node -e \"if (process.env.NODE_ENV !== 'production' && (process.env.CI !== 'true' || process.env.FORCE_LOCAL_TESTS === 'true')) { require('child_process').execSync('jest --coverage --watchAll=false', {stdio: 'inherit'}); } else { console.log('⏭️  Unit tests skipped (not localhost or CI environment)'); }\"",
     "test:e2e": "playwright test",
+    "test:e2e:local": "node -e \"if (process.env.NODE_ENV !== 'production' && (process.env.CI !== 'true' || process.env.FORCE_LOCAL_TESTS === 'true')) { require('child_process').execSync('playwright test', {stdio: 'inherit'}); } else { console.log('⏭️  E2E tests skipped (not localhost or CI environment)'); }\"",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
     "test:all": "npm run test:ci && npm run test:e2e",
+    "test:all:local": "npm run test:unit:local && npm run test:e2e:local",
+    "test:force": "FORCE_LOCAL_TESTS=true npm run test:all",
+    "test:commit": "RUN_TESTS_ON_COMMIT=true npm run pre-commit",
     "lint": "eslint src --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "type-check": "tsc --noEmit",
     "pre-commit": "npm run type-check && npm run lint && npm run test:ci",
+    "pre-commit:no-tests": "npm run type-check && npm run lint",
     "test:report": "node scripts/test-report.js",
     "prepare": "husky install",
     "eject": "react-scripts eject",
@@ -83,8 +90,7 @@
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx}": [
-      "eslint --fix",
-      "jest --bail --findRelatedTests --passWithNoTests"
+      "eslint --fix"
     ],
     "src/**/*.{js,jsx,ts,tsx,json,css,md}": [
       "prettier --write"

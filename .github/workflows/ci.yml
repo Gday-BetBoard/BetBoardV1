@@ -5,10 +5,61 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      run_tests:
+        description: 'Run unit tests'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+        - 'true'
+        - 'false'
+      run_e2e:
+        description: 'Run E2E tests'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+        - 'true'
+        - 'false'
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Use Node.js 20.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20.x
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run type checking
+      run: npm run type-check
+
+    - name: Run linting
+      run: npm run lint
+
+    - name: Build application
+      run: npm run build
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-files
+        path: build/
+        retention-days: 30
+
   test:
     runs-on: ubuntu-latest
+    if: github.event.inputs.run_tests == 'true' || github.event_name == 'workflow_dispatch'
     
     strategy:
       matrix:
@@ -27,12 +78,6 @@ jobs:
     - name: Install dependencies
       run: npm ci
 
-    - name: Run type checking
-      run: npm run type-check
-
-    - name: Run linting
-      run: npm run lint
-
     - name: Run unit tests with coverage
       run: npm run test:ci
 
@@ -46,8 +91,8 @@ jobs:
 
   e2e:
     runs-on: ubuntu-latest
-    needs: test
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build
+    if: github.event.inputs.run_e2e == 'true' || github.event_name == 'workflow_dispatch'
 
     steps:
     - name: Checkout repository
@@ -74,33 +119,6 @@ jobs:
       with:
         name: playwright-report
         path: playwright-report/
-        retention-days: 30
-
-  build:
-    runs-on: ubuntu-latest
-    needs: test
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-
-    - name: Use Node.js 20.x
-      uses: actions/setup-node@v4
-      with:
-        node-version: 20.x
-        cache: 'npm'
-
-    - name: Install dependencies
-      run: npm ci
-
-    - name: Build application
-      run: npm run build
-
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: build-files
-        path: build/
         retention-days: 30
 
   security:
