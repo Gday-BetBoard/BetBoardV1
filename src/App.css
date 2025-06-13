@@ -848,7 +848,7 @@ body::after {
   padding: 2rem;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.5rem;
 }
 
 .form-group {
@@ -861,12 +861,13 @@ body::after {
   font-weight: 500;
   color: rgba(255, 255, 255, 0.9);
   font-size: 0.875rem;
-  margin: 0 0 0.75rem 0;
+  margin: 0 0 0.75rem 0 !important;
   padding: 0;
 }
 
 .form-group:not(:first-child) label {
-  margin-top: 0.75rem;
+  margin-top: 1rem !important;
+  margin-bottom: 0.75rem !important;
 }
 
 .form-group input,
@@ -1871,13 +1872,14 @@ body::after {
 
   .form-group label {
     display: block;
-    margin: 0 0 0.75rem 0;
+    margin: 0 0 0.75rem 0 !important;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.9);
   }
 
   .form-group:not(:first-child) label {
-    margin-top: 0.75rem;
+    margin-top: 1rem !important;
+    margin-bottom: 0.75rem !important;
   }
 
   .mobile-hint {
