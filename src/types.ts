@@ -25,6 +25,9 @@ export interface Bet {
   comments: Comment[];
   assignees: string[];
   watchers?: string[];
+  archived?: boolean;
+  archivedAt?: string;
+  archivedBy?: string;
   attachments?: Array<{
     id: string;
     name: string;

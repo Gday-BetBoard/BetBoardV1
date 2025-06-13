@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import './App.css';
-import { Bet, User, Toast, Comment as BetComment } from './types';
+import { Bet, User, Comment as BetComment } from './types';
 import BetCard from './components/BetCard';
 import BetEditor from './components/BetEditor';
 import SettingsModal from './components/SettingsModal';
@@ -10,37 +10,43 @@ import GanttChart from './components/GanttChart';
 import betsData from './data/bets.json';
 import { getCurrentDateYYYYMMDD } from './utils/dateUtils';
 import { AnimatePresence } from 'framer-motion';
-
-const DEFAULT_USERS = [
-  { id: 'user-1', name: 'Steve P' },
-  { id: 'user-2', name: 'Jane D' },
-  { id: 'user-3', name: 'John Doe' },
-  { id: 'user-4', name: 'Emily R' },
-  { id: 'user-5', name: 'Michael B' }
-];
+import { useBetStore } from './store/betStore';
 
 function App() {
-  const [bets, setBets] = useState<Bet[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
-  const [filteredBets, setFilteredBets] = useState<Bet[]>([]);
+  // Use Zustand store instead of local state
+  const {
+    bets,
+    users,
+    filters,
+    toasts,
+    setBets,
+    addBet,
+    updateBet,
+    deleteBet: deleteStoreBet,
+    archiveBet,
+    restoreBet,
+    getArchivedBets,
+    setUsers,
+    setFilters,
+    showToast,
+    removeToast
+  } = useBetStore();
+
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [currentBet, setCurrentBet] = useState<Bet | null>(null);
-  const [toasts, setToasts] = useState<Toast[]>([]);
-  const [filters, setFilters] = useState({
-    owner: '',
-    status: ''
-  });
 
-  // Initialize data
+  // Initialize data from JSON if store is empty (first time load)
   useEffect(() => {
-    setBets(betsData as Bet[]);
-    setUsers(DEFAULT_USERS);
-  }, []);
+    if (bets.length === 0) {
+      setBets(betsData as Bet[]);
+    }
+  }, [bets.length, setBets]);
 
-  // Apply filters
-  useEffect(() => {
-    let filtered = [...bets];
+  // Apply filters using useMemo for better performance
+  const filteredBets = useMemo(() => {
+    // First filter out archived bets
+    let filtered = bets.filter(bet => !bet.archived);
 
     if (filters.owner) {
       filtered = filtered.filter(bet => bet.owner === filters.owner);
@@ -50,21 +56,8 @@ function App() {
       filtered = filtered.filter(bet => bet.status === filters.status);
     }
 
-    setFilteredBets(filtered);
+    return filtered;
   }, [bets, filters]);
-
-  const showToast = (message: string, type: Toast['type'] = 'info') => {
-    const toast: Toast = {
-      id: Date.now().toString(),
-      message,
-      type
-    };
-    setToasts(prev => [...prev, toast]);
-  };
-
-  const removeToast = (id: string) => {
-    setToasts(prev => prev.filter(toast => toast.id !== id));
-  };
 
   const openEditor = (bet?: Bet) => {
     setCurrentBet(bet || null);
@@ -86,7 +79,7 @@ function App() {
         id: currentBet.id,
         lastUpdated: now
       };
-      setBets(prev => prev.map(bet => bet.id === currentBet.id ? updatedBet : bet));
+      updateBet(currentBet.id, updatedBet);
       showToast('Bet updated successfully!', 'success');
     } else {
       // Create new bet
@@ -95,16 +88,16 @@ function App() {
         id: `bet-${Date.now()}`,
         lastUpdated: now
       };
-      setBets(prev => [...prev, newBet]);
+      addBet(newBet);
       showToast('New bet created successfully!', 'success');
     }
     
     closeEditor();
   };
 
-  const deleteBet = (betId: string) => {
-    setBets(prev => prev.filter(bet => bet.id !== betId));
-    showToast('Bet deleted successfully!', 'success');
+  const handleArchiveBet = (betId: string) => {
+    archiveBet(betId);
+    showToast('Bet archived successfully!', 'success');
   };
 
   const addComment = (betId: string, comment: { author: string; text: string }) => {
@@ -115,16 +108,17 @@ function App() {
       text: comment.text,
       date: now
     };
-    setBets(prev => prev.map(bet => 
-      bet.id === betId 
-        ? { 
-            ...bet, 
-            comments: [...bet.comments, newComment],
-            lastUpdated: now
-          }
-        : bet
-    ));
-    showToast('Comment added successfully!', 'success');
+    
+    const bet = bets.find(b => b.id === betId);
+    if (bet) {
+      const updatedBet = { 
+        ...bet, 
+        comments: [...bet.comments, newComment],
+        lastUpdated: now
+      };
+      updateBet(betId, updatedBet);
+      showToast('Comment added successfully!', 'success');
+    }
   };
 
   const updateUsers = (newUsers: User[]) => {
@@ -173,8 +167,14 @@ function App() {
 
       <main className="main-content">
         <FilterBar 
-          filters={filters}
-          onFiltersChange={setFilters}
+          filters={{
+            owner: filters.owner || '',
+            status: filters.status || ''
+          }}
+          onFiltersChange={(newFilters) => setFilters({
+            owner: newFilters.owner || undefined,
+            status: newFilters.status as any || undefined  
+          })}
           users={users}
         />
 
@@ -187,7 +187,7 @@ function App() {
               bet={bet}
               users={users}
               onEdit={() => openEditor(bet)}
-              onDelete={() => deleteBet(bet.id)}
+              onDelete={() => handleArchiveBet(bet.id)}
               onAddComment={(comment) => addComment(bet.id, comment)}
             />
           ))}
@@ -218,6 +218,15 @@ function App() {
           onUpdateUsers={updateUsers}
           onClose={() => setIsSettingsOpen(false)}
           showToast={showToast}
+          archivedBets={getArchivedBets()}
+          onRestoreBet={(betId) => {
+            restoreBet(betId);
+            showToast('Bet restored successfully!', 'success');
+          }}
+          onDeleteBet={(betId) => {
+            deleteStoreBet(betId);
+            showToast('Bet permanently deleted!', 'success');
+          }}
         />
       )}
 

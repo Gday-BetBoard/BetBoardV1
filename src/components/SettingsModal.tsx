@@ -1,18 +1,24 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { User, ToastType } from '../types';
+import { User, ToastType, Bet } from '../types';
 
 interface SettingsModalProps {
   users: User[];
   onUpdateUsers: (users: User[]) => void;
   onClose: () => void;
   showToast: (message: string, type: ToastType) => void;
+  archivedBets: Bet[];
+  onRestoreBet: (betId: string) => void;
+  onDeleteBet: (betId: string) => void;
 }
 
 const SettingsModal: React.FC<SettingsModalProps> = ({ 
   users, 
   onUpdateUsers, 
   onClose, 
-  showToast 
+  showToast,
+  archivedBets,
+  onRestoreBet,
+  onDeleteBet
 }) => {
   const [newUserName, setNewUserName] = useState('');
   const [isClosing, setIsClosing] = useState(false);
@@ -140,6 +146,54 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                 </div>
               )}
             </div>
+          </div>
+
+          <div className="settings-section">
+            <h3>Archived Bets</h3>
+            <p>View and manage archived bets. You can restore them or permanently delete them.</p>
+
+            {archivedBets.length === 0 ? (
+              <p className="no-archived-bets">No archived bets found.</p>
+            ) : (
+              <div className="archived-bets-list">
+                <h4>Archived Bets ({archivedBets.length})</h4>
+                <div className="archived-bet-items">
+                  {archivedBets.map(bet => (
+                    <div key={bet.id} className="archived-bet-item">
+                      <div className="bet-info">
+                        <strong>{bet.what}</strong>
+                        <p>Owner: {bet.owner}</p>
+                        <p>Archived: {bet.archivedAt ? new Date(bet.archivedAt).toLocaleDateString() : 'Unknown'}</p>
+                      </div>
+                      <div className="bet-actions">
+                        <button
+                          className="btn btn-small btn-primary"
+                          onClick={() => {
+                            onRestoreBet(bet.id);
+                            showToast('Bet restored successfully!', 'success');
+                          }}
+                          title="Restore this bet"
+                        >
+                          🔄 Restore
+                        </button>
+                        <button
+                          className="btn btn-small btn-danger"
+                          onClick={() => {
+                            if (window.confirm('Are you sure you want to permanently delete this bet? This action cannot be undone.')) {
+                              onDeleteBet(bet.id);
+                              showToast('Bet permanently deleted!', 'success');
+                            }
+                          }}
+                          title="Permanently delete this bet"
+                        >
+                          🗑️ Delete
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

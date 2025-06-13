@@ -15,6 +15,9 @@ describe('SettingsModal', () => {
     onUpdateUsers: jest.fn(),
     onClose: jest.fn(),
     showToast: jest.fn(),
+    archivedBets: [],
+    onRestoreBet: jest.fn(),
+    onDeleteBet: jest.fn(),
   };
 
   beforeEach(() => {

@@ -34,8 +34,8 @@ const BetCard: React.FC<BetCardProps> = ({ bet, users, onEdit, onDelete, onAddCo
     }
   };
 
-  const handleDelete = () => {
-    if (window.confirm('Are you sure you want to delete this bet?')) {
+  const handleArchive = () => {
+    if (window.confirm('Are you sure you want to archive this bet? You can restore it later from Settings.')) {
       onDelete();
     }
   };
@@ -91,10 +91,10 @@ const BetCard: React.FC<BetCardProps> = ({ bet, users, onEdit, onDelete, onAddCo
             ✏️ Edit
           </button>
           <button 
-            className="btn btn-small btn-danger"
-            onClick={handleDelete}
+            className="btn btn-small btn-warning"
+            onClick={handleArchive}
           >
-            🗑️ Delete
+            📦 Archive
           </button>
         </div>
       </div>
