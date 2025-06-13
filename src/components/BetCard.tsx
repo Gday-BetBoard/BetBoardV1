@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Bet, User } from '../types';
 import { formatDateToDDMMYYYY } from '../utils/dateUtils';
 
@@ -14,6 +14,13 @@ const BetCard: React.FC<BetCardProps> = ({ bet, users, onEdit, onDelete, onAddCo
   const [showComments, setShowComments] = useState(false);
   const [newComment, setNewComment] = useState({ author: '', text: '' });
   const [showCommentForm, setShowCommentForm] = useState(false);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  // Minimum distance to trigger swipe
+  const minSwipeDistance = 50;
 
   const getStatusClass = (status: string) => {
     switch (status) {
@@ -40,10 +47,79 @@ const BetCard: React.FC<BetCardProps> = ({ bet, users, onEdit, onDelete, onAddCo
     }
   };
 
+  // Handle touch events for swipe gestures on mobile
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    // Left swipe to show actions, right swipe to expand
+    if (isLeftSwipe) {
+      // Show quick action (could be edit or archive)
+      if (window.innerWidth <= 480) {
+        setIsExpanded(!isExpanded);
+      }
+    }
+    if (isRightSwipe) {
+      // Quick expand/collapse comments
+      if (window.innerWidth <= 480) {
+        setShowComments(!showComments);
+      }
+    }
+  };
+
+  // Auto-select first user for mobile convenience
+  useEffect(() => {
+    if (showCommentForm && users.length > 0 && !newComment.author) {
+      setNewComment(prev => ({ ...prev, author: users[0].name }));
+    }
+  }, [showCommentForm, users, newComment.author]);
+
+  // Check if text content is long and should be truncated on mobile
+  const shouldTruncateText = (text: string) => {
+    return window.innerWidth <= 480 && text.length > 100;
+  };
+
+  const truncateText = (text: string, maxLength: number = 100) => {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
+  };
+
   return (
-    <div className="bet-card">
+    <div 
+      ref={cardRef}
+      className={`bet-card ${isExpanded ? 'bet-card-expanded' : ''}`}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+    >
       <div className="bet-header">
-        <div className="bet-owner">{bet.what}</div>
+        <div className="bet-owner">
+          {shouldTruncateText(bet.what) && !isExpanded 
+            ? truncateText(bet.what) 
+            : bet.what
+          }
+          {shouldTruncateText(bet.what) && (
+            <button 
+              className="expand-toggle"
+              onClick={() => setIsExpanded(!isExpanded)}
+              aria-label={isExpanded ? "Collapse" : "Expand"}
+            >
+              {isExpanded ? '▼' : '▶'}
+            </button>
+          )}
+        </div>
         <div className={`bet-status ${getStatusClass(bet.status)}`}>
           {bet.status}
         </div>
@@ -57,12 +133,22 @@ const BetCard: React.FC<BetCardProps> = ({ bet, users, onEdit, onDelete, onAddCo
 
         <div className="bet-field">
           <strong>Problem Statement:</strong>
-          <p>{bet.why}</p>
+          <p>
+            {shouldTruncateText(bet.why) && !isExpanded 
+              ? truncateText(bet.why) 
+              : bet.why
+            }
+          </p>
         </div>
 
         <div className="bet-field">
           <strong>Solution:</strong>
-          <p>{bet.how}</p>
+          <p>
+            {shouldTruncateText(bet.how) && !isExpanded 
+              ? truncateText(bet.how) 
+              : bet.how
+            }
+          </p>
         </div>
 
         <div className="bet-field">
@@ -73,7 +159,7 @@ const BetCard: React.FC<BetCardProps> = ({ bet, users, onEdit, onDelete, onAddCo
 
       <div className="bet-footer">
         <div className="bet-meta">
-          <span>Last updated: {formatDateToDDMMYYYY(bet.lastUpdated)}</span>
+          <span>Updated: {formatDateToDDMMYYYY(bet.lastUpdated)}</span>
           <span>{bet.comments.length} comment{bet.comments.length !== 1 ? 's' : ''}</span>
         </div>
 
@@ -81,66 +167,90 @@ const BetCard: React.FC<BetCardProps> = ({ bet, users, onEdit, onDelete, onAddCo
           <button 
             className="btn btn-small btn-secondary"
             onClick={() => setShowComments(!showComments)}
+            aria-label={`${showComments ? 'Hide' : 'Show'} comments`}
           >
-            💬 Comments
+            <span className="button-icon">💬</span>
+            <span className="button-text">Comments</span>
           </button>
           <button 
             className="btn btn-small btn-primary"
             onClick={onEdit}
+            aria-label="Edit bet"
           >
-            ✏️ Edit
+            <span className="button-icon">✏️</span>
+            <span className="button-text">Edit</span>
           </button>
           <button 
             className="btn btn-small btn-warning"
             onClick={handleArchive}
+            aria-label="Archive bet"
           >
-            📦 Archive
+            <span className="button-icon">📦</span>
+            <span className="button-text">Archive</span>
           </button>
         </div>
       </div>
 
+      {/* Mobile swipe hint */}
+      {window.innerWidth <= 480 && (
+        <div className="mobile-hint">
+          <small>💡 Swipe left to expand, right for comments</small>
+        </div>
+      )}
+
       {showComments && (
         <div className="comments-section">
           <div className="comments-header">
-            <h4>Comments</h4>
+            <h4>Comments ({bet.comments.length})</h4>
             <button 
               className="btn btn-small btn-primary"
               onClick={() => setShowCommentForm(!showCommentForm)}
+              aria-label={showCommentForm ? "Cancel comment" : "Add comment"}
             >
-              + Add Comment
+              <span className="button-icon">{showCommentForm ? '✕' : '+'}</span>
+              <span className="button-text">{showCommentForm ? 'Cancel' : 'Add Comment'}</span>
             </button>
           </div>
 
           {showCommentForm && (
             <form className="comment-form" onSubmit={handleAddComment}>
-              <select
-                value={newComment.author}
-                onChange={(e) => setNewComment({ ...newComment, author: e.target.value })}
-                required
-              >
-                <option value="">Select author...</option>
-                {users.map(user => (
-                  <option key={user.name} value={user.name}>
-                    {user.name}
-                  </option>
-                ))}
-              </select>
-              <textarea
-                value={newComment.text}
-                onChange={(e) => setNewComment({ ...newComment, text: e.target.value })}
-                placeholder="Enter your comment..."
-                required
-              />
+              <div className="comment-form-row">
+                <select
+                  value={newComment.author}
+                  onChange={(e) => setNewComment({ ...newComment, author: e.target.value })}
+                  required
+                  aria-label="Select comment author"
+                >
+                  <option value="">Select author...</option>
+                  {users.map(user => (
+                    <option key={user.name} value={user.name}>
+                      {user.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="comment-form-row">
+                <textarea
+                  value={newComment.text}
+                  onChange={(e) => setNewComment({ ...newComment, text: e.target.value })}
+                  placeholder="Enter your comment..."
+                  required
+                  rows={3}
+                  aria-label="Comment text"
+                />
+              </div>
               <div className="comment-form-actions">
                 <button type="submit" className="btn btn-small btn-primary">
-                  Add Comment
+                  <span className="button-icon">✓</span>
+                  <span className="button-text">Add Comment</span>
                 </button>
                 <button 
                   type="button" 
                   className="btn btn-small btn-secondary"
                   onClick={() => setShowCommentForm(false)}
                 >
-                  Cancel
+                  <span className="button-icon">✕</span>
+                  <span className="button-text">Cancel</span>
                 </button>
               </div>
             </form>
@@ -159,7 +269,9 @@ const BetCard: React.FC<BetCardProps> = ({ bet, users, onEdit, onDelete, onAddCo
           </div>
 
           {bet.comments.length === 0 && (
-            <p className="no-comments">No comments yet. Be the first to comment!</p>
+            <div className="no-comments">
+              <p>No comments yet. Be the first to comment!</p>
+            </div>
           )}
         </div>
       )}

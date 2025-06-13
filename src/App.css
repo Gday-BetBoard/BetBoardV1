@@ -214,9 +214,11 @@ body::after {
   width: 100%;
 }
 
-/* Filters */
+/* Filters - Desktop first approach */
 .filters {
   display: flex;
+  flex-direction: row !important;
+  align-items: flex-start;
   gap: 2rem;
   margin-bottom: 2rem;
   padding: 1.5rem;
@@ -224,6 +226,19 @@ body::after {
   backdrop-filter: blur(10px);
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Desktop specific - ensure horizontal layout */
+@media (min-width: 769px) {
+  .filters {
+    flex-direction: row !important;
+  }
+  
+  .filters-content {
+    display: flex;
+    flex-direction: row !important;
+    gap: 2rem;
+  }
 }
 
 .filter-group {
@@ -666,27 +681,27 @@ body::after {
 
 /* Buttons */
 .btn {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.25rem;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 0.875rem;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  color: white;
-  text-align: center;
-  white-space: nowrap;
-  font-family: inherit;
+  min-height: 44px; /* iOS accessibility standard */
+  min-width: 44px;
   text-decoration: none;
+  font-weight: 500;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent; /* Remove iOS tap highlight */
 }
 
 .btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 .btn:active {
@@ -694,50 +709,52 @@ body::after {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #F5D300 0%, #E6C200 100%);
-  color: #333;
-  border: 1px solid rgba(245, 211, 0, 0.3);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #E6C200 0%, #D4B000 100%);
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
 }
 
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
+  background: rgba(255, 255, 255, 0.9);
+  color: #374151;
   border: 1px solid rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(10px);
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(255, 255, 255, 0.5);
 }
 
 .btn-danger {
-  background: rgba(239, 68, 68, 0.2);
-  color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
 }
 
 .btn-danger:hover {
-  background: rgba(239, 68, 68, 0.3);
-  border-color: rgba(239, 68, 68, 0.4);
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
 }
 
 .btn-small {
   padding: 0.5rem 1rem;
   font-size: 0.75rem;
+  min-height: 38px;
+  min-width: 38px;
 }
 
-/* Mobile specific button styling */
+/* Always show button labels for better UX */
 .button-text {
   display: inline;
 }
 
 .button-icon {
-  display: none;
+  display: inline;
+  font-size: 0.875em;
 }
 
 /* Editor overlay */
@@ -1203,72 +1220,128 @@ body::after {
   border-color: rgba(59, 130, 246, 0.3);
 }
 
-/* Responsive design */
+/* Enhanced Mobile-First Responsive Design */
+
+/* Mobile-optimized header */
 @media (max-width: 768px) {
   .header {
-    padding: 0.75rem;
+    padding: 1rem;
+    position: relative; /* Change from sticky to reduce scroll issues */
   }
 
   .header-content {
-    flex-direction: column;
-    gap: 0.75rem;
-    align-items: flex-start;
+    flex-direction: row; /* Keep horizontal layout on tablet */
+    gap: 1rem;
+    align-items: center;
   }
 
   .header-title {
     position: static;
     transform: none;
-    text-align: left;
-    margin-bottom: 0.5rem;
+    text-align: center;
+    flex: 1;
+  }
+
+  .header-title h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
   }
 
   .header-actions {
-    width: 100%;
-    justify-content: space-between;
+    display: flex;
+    gap: 0.5rem;
   }
 
-  .main-content {
-    padding: 1rem;
-  }
-
+  /* Compact filter bar - ensure flex-direction column for 768px */
   .filters {
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 1rem;
     padding: 1rem;
     margin-bottom: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
   }
 
   .filter-group {
-    width: 100%;
+    flex: 1;
+  }
+
+  .filter-label {
+    font-size: 0.75rem;
+    margin-bottom: 0.25rem;
   }
 
   .filter-select {
     width: 100%;
     min-width: auto;
+    padding: 0.75rem;
+    font-size: 0.875rem;
+    min-height: 44px; /* Touch-friendly */
+    border-radius: 8px;
   }
 
+  /* Improved bet cards layout */
   .bets-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
 
-  .bet-actions {
-    justify-content: center;
+  .bet-card {
+    padding: 1rem;
+    border-radius: 12px;
   }
 
+  .bet-actions {
+    justify-content: space-between;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .bet-actions .btn {
+    flex: 1;
+    min-width: 100px;
+  }
+
+  /* Better modal experience */
   .editor-panel {
-    width: 90vw;
+    width: 95vw;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: 16px 16px 0 0; /* Bottom sheet style */
+  }
+
+  .editor-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: sticky;
+    top: 0;
+    background: inherit;
+    backdrop-filter: blur(10px);
   }
 
   .form-row {
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
   .form-actions {
-    flex-direction: column;
-    gap: 0.75rem;
+    flex-direction: row;
+    gap: 1rem;
+    padding: 1rem 0;
+    position: sticky;
+    bottom: 0;
+    background: inherit;
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
   }
 
+  .form-actions .btn {
+    flex: 1;
+  }
+
+  /* Improved toast layout */
   .toast-container {
     top: 1rem;
     right: 1rem;
@@ -1278,159 +1351,956 @@ body::after {
 
   .toast {
     min-width: auto;
+    border-radius: 12px;
   }
 
-  .gantt-timeline {
-    margin-left: 150px;
-  }
-
-  .gantt-label {
-    width: 150px;
-    padding-right: 0.5rem;
-  }
-
-  .filter-label {
-    font-size: 0.8rem;
-  }
-  
-  .filter-select {
-    padding: 0.6rem 0.8rem;
-    font-size: 0.8rem;
-  }
-
-  .btn {
-    padding: 0.6rem 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .logo-section {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .logo {
-    width: 30px;
-    height: 30px;
-  }
-
-  .header-title h1 {
-    font-size: 1.2rem;
-    margin-bottom: 0;
-  }
-
-  .header-title p {
-    font-size: 0.8rem;
-  }
-
-  .bet-card {
-    padding: 0.75rem;
-  }
-
-  .btn {
-    padding: 0.5rem;
-    min-width: 38px;
-    min-height: 38px;
-  }
-
-  .btn-small {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.7rem;
-  }
-
+  /* Gantt chart mobile optimization */
   .gantt-chart {
-    padding: 0.75rem;
-    overflow-x: auto;
     margin-bottom: 1rem;
+    border-radius: 12px;
+    overflow: hidden;
   }
 
   .gantt-header {
+    padding: 1rem;
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.75rem;
+    gap: 1rem;
   }
 
   .gantt-legend {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 0.5rem;
+    gap: 0.75rem;
     width: 100%;
   }
 
-  .legend-item {
-    font-size: 0.7rem;
-  }
-
   .gantt-container {
-    min-width: 400px; /* Ensure minimum width for content */
+    padding: 0 1rem 1rem;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* Smooth iOS scrolling */
   }
 
   .gantt-timeline {
-    margin-left: 100px;
-    padding-left: 0;
+    margin-left: 120px;
   }
 
   .gantt-label {
-    width: 100px;
-    overflow: hidden;
+    width: 120px;
+    padding-right: 0.5rem;
+  }
+}
+
+/* Enhanced mobile experience for small screens */
+@media (max-width: 480px) {
+  /* Full mobile experience enhancements */
+  .mobile-hint {
+    display: block;
+    opacity: 0.8;
+    animation: fadeInOut 3s ease-in-out;
   }
 
-  .gantt-label .bet-name {
-    font-size: 0.7rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 90px;
+  @keyframes fadeInOut {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.8; }
   }
 
-  .marker-label {
-    font-size: 0.6rem;
-    padding: 0.15rem 0.25rem;
-    min-width: 40px;
+  /* Enhanced touch-friendly form elements */
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    font-size: 16px; /* Prevent zoom on iOS */
+    min-height: 48px;
+    padding: 0.875rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    width: 100%;
+    box-sizing: border-box;
   }
 
-  /* Make the vertical view more scrollable */
-  .gantt-row {
-    min-height: 30px;
+  .form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+    line-height: 1.4;
   }
 
-  .gantt-bar {
-    height: 20px;
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: rgba(102, 126, 234, 0.6);
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
   }
 
-  .bar-label {
-    font-size: 0.65rem;
+  /* Better error state styling */
+  .field-error:focus {
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
   }
 
-  /* Ensure proper spacing between timeline elements */
-  .current-date .marker-label {
-    min-width: 45px;
-  }
-
-  .filters {
-    padding: 1rem;
+  /* Enhanced bet card mobile interactions */
+  .bet-card {
     margin-bottom: 1rem;
-    border-radius: 8px;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
   }
-  
+
+  .bet-card:active {
+    transform: scale(0.98);
+  }
+
+  .bet-header {
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .bet-owner {
+    font-size: 1rem;
+    line-height: 1.3;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+
+  .bet-status {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 20px;
+    font-weight: 600;
+    text-align: center;
+    align-self: flex-start;
+  }
+
+  /* Enhanced bet content layout */
+  .bet-content {
+    padding: 1rem;
+  }
+
+  .bet-field {
+    margin-bottom: 0.75rem;
+  }
+
+  .bet-field:last-child {
+    margin-bottom: 0;
+  }
+
+  .bet-field strong {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 600;
+  }
+
+  .bet-field p {
+    margin: 0;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.875rem;
+  }
+
+  /* Enhanced bet footer */
+  .bet-footer {
+    padding: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .bet-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  /* Stack action buttons vertically on very small screens */
+  .bet-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .bet-actions .btn {
+    width: 100%;
+    justify-content: center;
+    padding: 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  /* Enhanced button icons and text balance */
+  .button-icon {
+    font-size: 1rem;
+    margin-right: 0.5rem;
+  }
+
+  .button-text {
+    font-weight: 500;
+  }
+
+  /* Modal form enhancements */
+  .editor-panel-mobile .editor-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: inherit;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .editor-panel-mobile .form-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+    background: inherit;
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1rem 1.5rem;
+    margin: 0;
+  }
+
+  .form-scroll-container {
+    padding-bottom: 2rem; /* Extra space for comfortable scrolling */
+  }
+
+  /* Better settings modal mobile experience */
+  .modal-content {
+    border-radius: 20px 20px 0 0;
+    max-height: 85vh;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    margin: 0;
+    transform: translateY(0);
+  }
+
+  .modal-body {
+    max-height: calc(85vh - 140px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Enhanced archived bets mobile layout */
+  .archived-bet-item {
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+  }
+
+  .archived-bet-item .bet-info {
+    padding: 1rem;
+  }
+
+  .archived-bet-item .bet-actions {
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.02);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .archived-bet-item .bet-actions .btn {
+    flex: 1;
+    padding: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  /* User management mobile enhancements */
+  .user-item {
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 0.5rem;
+    padding: 0.875rem;
+  }
+
+  .user-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  /* Enhanced scrollbar styling for mobile */
+  .form-scroll-container::-webkit-scrollbar,
+  .modal-body::-webkit-scrollbar {
+    width: 3px;
+  }
+
+  .form-scroll-container::-webkit-scrollbar-track,
+  .modal-body::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .form-scroll-container::-webkit-scrollbar-thumb,
+  .modal-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+  }
+}
+
+/* Ensure accessibility across all breakpoints */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .btn {
+    border: 2px solid currentColor;
+  }
+
+  .bet-card {
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+
+  .modal-content {
+    border: 2px solid rgba(255, 255, 255, 0.7);
+  }
+}
+
+/* Dark mode considerations for better mobile battery life */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  }
+
+  .btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: #f9fafb;
+  }
+
+  .bet-card {
+    background: rgba(255, 255, 255, 0.05);
+  }
+}
+
+/* Enhanced bet card mobile features */
+.bet-card-expanded {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  transform: scale(1.02);
+  z-index: 10;
+  position: relative;
+}
+
+.expand-toggle {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 0.75rem;
+  margin-left: 0.5rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.expand-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.mobile-hint {
+  padding: 0.5rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  margin-top: 0.5rem;
+}
+
+.mobile-hint small {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.7rem;
+}
+
+/* Enhanced comment form layout */
+.comment-form-row {
+  margin-bottom: 0.75rem;
+}
+
+.comment-form-row:last-of-type {
+  margin-bottom: 1rem;
+}
+
+/* Enhanced form validation and mobile experience */
+.field-error {
+  border-color: #ef4444 !important;
+  background: rgba(239, 68, 68, 0.1) !important;
+}
+
+.error-message {
+  color: #f87171;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.error-message::before {
+  content: "⚠️";
+  font-size: 0.8rem;
+}
+
+/* Enhanced modal experience */
+.editor-panel-mobile {
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  border-radius: 0 !important;
+  transform: none !important;
+}
+
+.form-scroll-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 1.5rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mobile-shortcuts {
+  padding: 0.5rem 1rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-shortcuts small {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.7rem;
+}
+
+/* Status select styling */
+.status-select {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.status-select option {
+  background: #374151;
+  color: white;
+}
+
+/* Enhanced button states */
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn:disabled:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Better warning button styling */
+.btn-warning {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+}
+
+.btn-warning:hover {
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+}
+
+/* Enhanced mobile breakpoints with better touch targets */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 1rem;
+  }
+
+  /* Better mobile form experience */
+  .form-group {
+    margin-bottom: 1.25rem;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .mobile-hint {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: normal;
+  }
+
+  /* Enhanced comment section mobile layout */
+  .comments-section {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .comments-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .comments-header h4 {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+  }
+
+  /* Better comment form mobile layout */
+  .comment-form {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+  }
+
+  .comment-form select,
+  .comment-form textarea {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+  }
+
+  .comment-form select:focus,
+  .comment-form textarea:focus {
+    outline: none;
+    border-color: rgba(102, 126, 234, 0.5);
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .comment-form-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  /* Enhanced comment display */
+  .comment {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+  }
+
+  .comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .comment-header strong {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.875rem;
+  }
+
+  .comment-date {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.75rem;
+  }
+
+  .comment-text {
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.4;
+    margin: 0;
+    font-size: 0.875rem;
+  }
+
+  .no-comments {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: rgba(255, 255, 255, 0.5);
+  }
+}
+
+@media (max-width: 480px) {
+  /* Full mobile experience enhancements */
+  .mobile-hint {
+    display: block;
+    opacity: 0.8;
+    animation: fadeInOut 3s ease-in-out;
+  }
+
+  @keyframes fadeInOut {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+  }
+
+  /* Enhanced touch-friendly form elements */
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    font-size: 16px; /* Prevent zoom on iOS */
+    min-height: 48px;
+    padding: 0.875rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+    line-height: 1.4;
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: rgba(102, 126, 234, 0.6);
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+
+  /* Better error state styling */
+  .field-error:focus {
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+  }
+
+  /* Enhanced bet card mobile interactions */
+  .bet-card {
+    margin-bottom: 1rem;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .bet-card:active {
+    transform: scale(0.98);
+  }
+
+  .bet-header {
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .bet-owner {
+    font-size: 1rem;
+    line-height: 1.3;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+
+  .bet-status {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 20px;
+    font-weight: 600;
+    text-align: center;
+    align-self: flex-start;
+  }
+
+  /* Enhanced bet content layout */
+  .bet-content {
+    padding: 1rem;
+  }
+
+  .bet-field {
+    margin-bottom: 0.75rem;
+  }
+
+  .bet-field:last-child {
+    margin-bottom: 0;
+  }
+
+  .bet-field strong {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 600;
+  }
+
+  .bet-field p {
+    margin: 0;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.875rem;
+  }
+
+  /* Enhanced bet footer */
+  .bet-footer {
+    padding: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .bet-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  /* Stack action buttons vertically on very small screens */
+  .bet-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .bet-actions .btn {
+    width: 100%;
+    justify-content: center;
+    padding: 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  /* Enhanced button icons and text balance */
+  .button-icon {
+    font-size: 1rem;
+    margin-right: 0.5rem;
+  }
+
+  .button-text {
+    font-weight: 500;
+  }
+
+  /* Modal form enhancements */
+  .editor-panel-mobile .editor-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: inherit;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .editor-panel-mobile .form-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+    background: inherit;
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1rem 1.5rem;
+    margin: 0;
+  }
+
+  .form-scroll-container {
+    padding-bottom: 2rem; /* Extra space for comfortable scrolling */
+  }
+
+  /* Better settings modal mobile experience */
+  .modal-content {
+    border-radius: 20px 20px 0 0;
+    max-height: 85vh;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    margin: 0;
+    transform: translateY(0);
+  }
+
+  .modal-body {
+    max-height: calc(85vh - 140px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Enhanced archived bets mobile layout */
+  .archived-bet-item {
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+  }
+
+  .archived-bet-item .bet-info {
+    padding: 1rem;
+  }
+
+  .archived-bet-item .bet-actions {
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.02);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .archived-bet-item .bet-actions .btn {
+    flex: 1;
+    padding: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  /* User management mobile enhancements */
+  .user-item {
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 0.5rem;
+    padding: 0.875rem;
+  }
+
+  .user-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  /* Enhanced scrollbar styling for mobile */
+  .form-scroll-container::-webkit-scrollbar,
+  .modal-body::-webkit-scrollbar {
+    width: 3px;
+  }
+
+  .form-scroll-container::-webkit-scrollbar-track,
+  .modal-body::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .form-scroll-container::-webkit-scrollbar-thumb,
+  .modal-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+  }
+}
+
+.filter-actions {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+/* Enhanced mobile breakpoints with better touch targets */
+@media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+    gap: 0.625rem;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+  }
+
+  .filters-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .filter-group {
+    flex: 1;
+    padding: 0;
+    background: transparent;
+    border: none;
+  }
+
   .filter-label {
     font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 0.375rem;
+    display: block;
+    color: rgba(255, 255, 255, 0.85);
   }
 
   .filter-select {
-    padding: 0.5rem 0.6rem;
-    font-size: 0.75rem;
-    min-height: 38px;
+    font-size: 16px; /* Prevent zoom on iOS */
+    padding: 0.75rem;
+    min-height: 44px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    width: 100%;
   }
 
-  /* Show icons only on very small screens */
-  .button-text {
-    display: none;
+  .filter-select:focus {
+    outline: none;
+    border-color: rgba(102, 126, 234, 0.4);
+    background: rgba(255, 255, 255, 0.15);
   }
-  
-  .button-icon {
-    display: inline;
-    font-size: 1rem;
+
+  .filter-select option {
+    background: #374151;
+    color: white;
+    padding: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .filters {
+    flex-direction: column;
+    gap: 0.375rem;
+    margin-bottom: 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    padding: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .filters-content {
+    gap: 0.375rem;
+  }
+
+  .filter-group {
+    background: transparent;
+    padding: 0;
+    border: none;
+  }
+
+  .filter-label {
+    font-size: 0.75rem;
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .filter-select {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 0.625rem;
+    border-radius: 6px;
+    font-size: 16px;
+    min-height: 40px;
+    width: 100%;
+  }
+
+  .filter-select:focus {
+    outline: none;
+    border-color: rgba(102, 126, 234, 0.4);
+    background: rgba(255, 255, 255, 0.15);
   }
 } 
