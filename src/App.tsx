@@ -202,14 +202,14 @@ function App() {
       </main>
 
       <AnimatePresence>
-        {isEditorOpen && (
-          <BetEditor
-            bet={currentBet}
-            users={users}
-            onSave={saveBet}
-            onClose={closeEditor}
-          />
-        )}
+      {isEditorOpen && (
+        <BetEditor
+          bet={currentBet}
+          users={users}
+          onSave={saveBet}
+          onClose={closeEditor}
+        />
+      )}
       </AnimatePresence>
 
       {isSettingsOpen && (
