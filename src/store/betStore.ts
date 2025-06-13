@@ -53,11 +53,39 @@ export const useBetStore = create<BetStore>()(
         bets: [...state.bets, bet] 
       })),
       
-      updateBet: (id, updates) => set((state) => ({
-        bets: state.bets.map(bet => 
-          bet.id === id ? { ...bet, ...updates } : bet
-        )
-      })),
+      updateBet: (id, updates) => set((state) => {
+        const currentBet = state.bets.find(bet => bet.id === id);
+        
+        // Check if status is being updated to "Done" and bet is not already archived
+        const shouldAutoArchive = 
+          updates.status === 'Done' && 
+          currentBet && 
+          !currentBet.archived &&
+          currentBet.status !== 'Done';
+
+        const updatedBet = { ...currentBet, ...updates };
+        
+        // If auto-archiving, add archive fields and show toast
+        if (shouldAutoArchive) {
+          updatedBet.archived = true;
+          updatedBet.archivedAt = new Date().toISOString();
+          updatedBet.archivedBy = 'Auto-archived (Status: Done)';
+          
+          // Show toast notification for auto-archiving
+          setTimeout(() => {
+            get().showToast(
+              `Bet "${currentBet.what}" automatically archived (Status: Done)`, 
+              'success'
+            );
+          }, 100);
+        }
+
+        return {
+          bets: state.bets.map(bet => 
+            bet.id === id ? updatedBet : bet
+          )
+        };
+      }),
       
       deleteBet: (id) => set((state) => ({
         bets: state.bets.filter(bet => bet.id !== id)
