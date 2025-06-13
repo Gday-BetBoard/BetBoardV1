@@ -848,19 +848,25 @@ body::after {
   padding: 2rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0;
 }
 
 .form-group label {
   font-weight: 500;
   color: rgba(255, 255, 255, 0.9);
   font-size: 0.875rem;
+  margin: 0 0 0.75rem 0;
+  padding: 0;
+}
+
+.form-group:not(:first-child) label {
+  margin-top: 0.75rem;
 }
 
 .form-group input,
@@ -899,6 +905,10 @@ body::after {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
+}
+
+.form-row .form-group {
+  gap: 0;
 }
 
 .form-actions {
@@ -1861,9 +1871,13 @@ body::after {
 
   .form-group label {
     display: block;
-    margin-bottom: 0.5rem;
+    margin: 0 0 0.75rem 0;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.9);
+  }
+
+  .form-group:not(:first-child) label {
+    margin-top: 0.75rem;
   }
 
   .mobile-hint {
