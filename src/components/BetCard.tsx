@@ -152,7 +152,7 @@ const BetCard: React.FC<BetCardProps> = ({ bet, users, onEdit, onDelete, onAddCo
         </div>
 
         <div className="bet-field">
-          <strong>Due Date:</strong>
+                          <strong>Target Release:</strong>
           <p>{formatDateToDDMMYYYY(bet.when)}</p>
         </div>
       </div>

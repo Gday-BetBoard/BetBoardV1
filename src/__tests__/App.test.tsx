@@ -40,8 +40,8 @@ describe('App Component', () => {
     // Check if bet data is being displayed
     expect(screen.getByText('Timeline')).toBeInTheDocument();
     
-    // The bets should be rendered in the grid - check for Due: text
-    const betElements = screen.getAllByText(/Due:/);
+    // The bets should be rendered in the grid - check for Target Release: text
+    const betElements = screen.getAllByText(/Target Release:/);
     expect(betElements.length).toBeGreaterThan(0);
   });
 }); 

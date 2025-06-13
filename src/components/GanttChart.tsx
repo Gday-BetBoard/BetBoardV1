@@ -16,14 +16,14 @@ const GanttChart: React.FC<GanttChartProps> = ({ bets }) => {
   const chartStartDate = new Date(currentDate);
   const chartStartDateStr = currentDate;
   
-  // Find the latest due date to determine chart span
-  const latestDueDate = bets.reduce((latest, bet) => {
+  // Find the latest target release date to determine chart span
+  const latestTargetDate = bets.reduce((latest, bet) => {
     const betDate = new Date(bet.when);
     return betDate > new Date(latest) ? bet.when : latest;
   }, currentDate);
 
-  // Calculate total days from today to latest due date (minimum 30 days)
-  const totalDays = Math.max(getDaysBetween(chartStartDateStr, latestDueDate) + 14, 30);
+  // Calculate total days from today to latest target release date (minimum 30 days)
+  const totalDays = Math.max(getDaysBetween(chartStartDateStr, latestTargetDate) + 14, 30);
   const chartEndDate = addDays(new Date(chartStartDate), totalDays);
 
   // Generate week markers starting from the next week after today to avoid overlap
@@ -51,17 +51,17 @@ const GanttChart: React.FC<GanttChartProps> = ({ bets }) => {
 
   // Calculate bet positions and widths - all bars start from today (0%)
   const betBars = bets.map(bet => {
-    const betDueDate = new Date(bet.when);
+    const betTargetDate = new Date(bet.when);
     const daysFromToday = getDaysBetween(chartStartDateStr, bet.when);
     
-    // All bars start from today (0%) and extend to their due date
+    // All bars start from today (0%) and extend to their target release date
     const width = Math.max(2, Math.min((daysFromToday / totalDays) * 100, 95));
     
     return {
       ...bet,
       position: 0, // Always start from today (0%)
-      width: width, // Width extends to the due date
-      isOverdue: betDueDate < currentDateObj && bet.status !== 'Done'
+      width: width, // Width extends to the target release date
+      isOverdue: betTargetDate < currentDateObj && bet.status !== 'Done'
     };
   });
 
@@ -138,10 +138,10 @@ const GanttChart: React.FC<GanttChartProps> = ({ bets }) => {
                     width: `${bet.width}%`,
                     backgroundColor: getStatusColor(bet.status, bet.isOverdue)
                   }}
-                  title={`${bet.what} - Due: ${formatDateToDDMMYYYY(bet.when)} - Status: ${bet.status}`}
+                  title={`${bet.what} - Target Release: ${formatDateToDDMMYYYY(bet.when)} - Status: ${bet.status}`}
                 >
                   <span className="bar-label">
-                    Due: {formatDateToDDMMYYYY(bet.when)}
+                    Target Release: {formatDateToDDMMYYYY(bet.when)}
                   </span>
                 </div>
               </div>

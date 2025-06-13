@@ -101,14 +101,14 @@ const BetEditor: React.FC<BetEditorProps> = ({ bet, users, onSave, onClose }) =>
     }
     
     if (!formData.when) {
-      errors.when = 'Due date is required';
+      errors.when = 'Target release date is required';
     } else {
-      const dueDate = new Date(formData.when);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      
-      if (dueDate < today) {
-        errors.when = 'Due date cannot be in the past';
+          const targetDate = new Date(formData.when);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    if (targetDate < today) {
+      errors.when = 'Target release date cannot be in the past';
       }
     }
     
@@ -310,7 +310,7 @@ const BetEditor: React.FC<BetEditorProps> = ({ bet, users, onSave, onClose }) =>
 
             <div className="form-row">
               <div className="form-group">
-                <label htmlFor="when">Due Date *</label>
+                <label htmlFor="when">Target Release *</label>
                 <input
                   type="date"
                   id="when"
