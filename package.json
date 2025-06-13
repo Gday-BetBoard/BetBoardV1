@@ -3,7 +3,6 @@
   "version": "2.0.0",
   "description": "BetBoard - Enterprise Digital Delivery Tracker",
   "private": true,
-  "homepage": "https://gday-betboard.github.io/BetBoardV1",
   "dependencies": {
     "@headlessui/react": "^1.7.0",
     "@heroicons/react": "^2.0.0",
