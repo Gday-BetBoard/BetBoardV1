@@ -906,10 +906,51 @@ body::after {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
+  align-items: start;
 }
 
 .form-row .form-group {
   gap: 0;
+}
+
+.form-row .form-group label {
+  margin: 1rem 0 0.75rem 0 !important;
+}
+
+/* Ensure uniform padding for form-row inputs */
+.form-row .form-group input,
+.form-row .form-group select {
+  padding: 0.75rem 1rem !important;
+  height: 48px !important;
+  box-sizing: border-box !important;
+  font-size: 0.875rem !important;
+  line-height: 1.2 !important;
+}
+
+/* Specific styling for date inputs to match selects */
+.form-row .form-group input[type="date"] {
+  padding: 0.75rem 1rem !important;
+  height: 48px !important;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  color: white !important;
+}
+
+/* Hide date input calendar icon for uniform appearance */
+.form-row .form-group input[type="date"]::-webkit-calendar-picker-indicator {
+  background: transparent;
+  bottom: 0;
+  color: transparent;
+  cursor: pointer;
+  height: auto;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: auto;
 }
 
 .form-actions {
@@ -1358,6 +1399,47 @@ body::after {
   .form-row {
     grid-template-columns: 1fr;
     gap: 1rem;
+    align-items: start;
+  }
+
+  .form-row .form-group label {
+    margin: 1rem 0 0.75rem 0 !important;
+  }
+
+  /* Ensure uniform padding for mobile form-row inputs */
+  .form-row .form-group input,
+  .form-row .form-group select {
+    padding: 0.75rem 1rem !important;
+    height: 48px !important;
+    box-sizing: border-box !important;
+    font-size: 0.875rem !important;
+    line-height: 1.2 !important;
+  }
+
+  /* Mobile date input styling */
+  .form-row .form-group input[type="date"] {
+    padding: 0.75rem 1rem !important;
+    height: 48px !important;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: white !important;
+  }
+
+  /* Hide mobile date input calendar icon */
+  .form-row .form-group input[type="date"]::-webkit-calendar-picker-indicator {
+    background: transparent;
+    bottom: 0;
+    color: transparent;
+    cursor: pointer;
+    height: auto;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: auto;
   }
 
   .form-actions {
