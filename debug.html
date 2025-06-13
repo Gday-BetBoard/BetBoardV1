@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug - BetBoard</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f0f0f0; }
+        .debug { background: white; padding: 20px; border-radius: 8px; margin: 10px 0; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>BetBoard Debug Page</h1>
+    
+    <div class="debug">
+        <h3>Static File Test</h3>
+        <p id="static-test">Testing...</p>
+    </div>
+    
+    <div class="debug">
+        <h3>Asset Loading Test</h3>
+        <p>CSS: <span id="css-test">Testing...</span></p>
+        <p>JS: <span id="js-test">Testing...</span></p>
+    </div>
+    
+    <div class="debug">
+        <h3>React App Test</h3>
+        <p id="react-test">Testing...</p>
+        <div id="root-test"></div>
+    </div>
+    
+    <script>
+        // Test static files
+        document.getElementById('static-test').innerHTML = '<span class="success">✓ Static HTML loads correctly</span>';
+        
+        // Test CSS loading
+        const cssLink = document.createElement('link');
+        cssLink.rel = 'stylesheet';
+        cssLink.href = '/static/css/main.b11332d8.css';
+        cssLink.onload = () => document.getElementById('css-test').innerHTML = '<span class="success">✓ CSS loads</span>';
+        cssLink.onerror = () => document.getElementById('css-test').innerHTML = '<span class="error">✗ CSS failed</span>';
+        document.head.appendChild(cssLink);
+        
+        // Test JS loading
+        const jsScript = document.createElement('script');
+        jsScript.src = '/static/js/main.5875b970.js';
+        jsScript.onload = () => document.getElementById('js-test').innerHTML = '<span class="success">✓ JS loads</span>';
+        jsScript.onerror = () => document.getElementById('js-test').innerHTML = '<span class="error">✗ JS failed</span>';
+        document.head.appendChild(jsScript);
+        
+        // Test React mounting
+        setTimeout(() => {
+            const rootDiv = document.getElementById('root-test');
+            rootDiv.innerHTML = '<div id="root"></div>';
+            
+            if (window.React) {
+                document.getElementById('react-test').innerHTML = '<span class="success">✓ React available</span>';
+            } else {
+                document.getElementById('react-test').innerHTML = '<span class="error">✗ React not available</span>';
+            }
+        }, 2000);
+    </script>
+</body>
+</html> 
